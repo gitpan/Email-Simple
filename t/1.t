@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-
+use strict;
 use Test::More tests => 12;
 
 sub read_file { local $/; open my $x, shift or die $!; return <$x> }
@@ -11,6 +11,7 @@ isa_ok($mail, "Email::Simple");
 
 like($mail->{head}->{From}->[0], qr/Andrew/, "Andrew's in the header");
 
+my $old_from;
 is($old_from = $mail->header("From"), 
    'Andrew Josey <ajosey@rdg.opengroup.org>',  
     "We can get a header");
@@ -21,6 +22,7 @@ is($mail->header("From"), $sc, "Which is consistently returned");
 # Put andrew back:
 $mail->header_set("From", $old_from);
 
+my $body;
 like($body = $mail->body, qr/Austin Group Chair/, "Body has sane stuff in it");
 my $old_body;
 

@@ -8,3 +8,4 @@ t/2.t
 t/test-mails/josey-fold
 t/test-mails/josey-nofold
 t/unit.t
+META.yml                                Module meta-data (added by MakeMaker)

@@ -1,5 +1,8 @@
 Revision history for Perl extension Email::Simple.
 
+1.6 - fixes to test suite.  We were using no_plan which fails on
+      older versions of Test::Harness
+
 1.5 - fixes more warnings during ->as_string calls
 
       Documents more strongly that Email::Simple is intended for use

@@ -1,5 +1,6 @@
 #!perl -w
-use Test::More no_plan;
+use strict;
+use Test::More tests => 5;
 
 # This time, with folding!
 
