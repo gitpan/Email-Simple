@@ -1,5 +1,8 @@
 Revision history for Perl extension Email::Simple.
 
+1.61  fixes to test suite.  there was a 5.6ish open my $fh which led to
+      test failures under 5.00503
+
 1.6 - fixes to test suite.  We were using no_plan which fails on
       older versions of Test::Harness
 

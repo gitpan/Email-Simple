@@ -2,7 +2,7 @@
 use strict;
 use Test::More tests => 12;
 
-sub read_file { local $/; open my $x, shift or die $!; return <$x> }
+sub read_file { local $/; local *FH; open FH, shift or die $!; return <FH> }
 use_ok("Email::Simple");
 # Very basic functionality test
 my $mail_text = read_file("t/test-mails/josey-nofold");

@@ -5,7 +5,7 @@ use Test::More tests => 5;
 # This time, with folding!
 
 use_ok("Email::Simple");
-sub read_file { local $/; open my $x, shift or die $!; return <$x> }
+sub read_file { local $/; local *FH; open FH, shift or die $!; return <FH> }
 
 my $mail_text = read_file("t/test-mails/josey-fold");
 
