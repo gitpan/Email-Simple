@@ -1,5 +1,7 @@
 Revision history for Perl extension Email::Simple.
 
+1.4 - fixes a warning emitted during ->as_string calls
+      fix for header unfolding
 1.3 - Many fixes from Richard Clamp <richardc@unixbeard.net>
 1.2 - Text::Wrapper->Text::Wrap
 

@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.3';
+$VERSION = '1.4';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
                                             # But then, so is a six dollar whore.
@@ -96,12 +96,12 @@ sub _read_headers {
     my @head_order;
     my ($curhead, $head_hash) = ("", {});
     for (split /$crlf/, $head) {
-        if (s/^\s+// or not /([^:]+):\s+(.*)/) {
+        if (s/^\s+// or not /^([^:]+):\s*(.*)/) {
             next if !$curhead; # Well, that sucks.
             # This is a continuation line. We fold it onto the end of
             # the previous header.
             chomp $head_hash->{$curhead}->[-1];
-            $head_hash->{$curhead}->[-1] .= " ".$_;
+            $head_hash->{$curhead}->[-1] .= $head_hash->{$curhead}->[-1] ? " $_" : $_;
         } else {
             $curhead = $1;
             push @{$head_hash->{$curhead}}, $2;
@@ -214,7 +214,7 @@ sub _headers_as_string {
 sub _header_as_string {
     my ($field, $data) = @_;
     my @stuff = @$data;
-    return unless "@stuff" =~ /./; # Ignore "empty" headers
+    return '' unless "@stuff" =~ /./; # Ignore "empty" headers
     return join "", map { $_ = "$field: $_\n";
                           length > 78 ? _fold($_) : $_ } 
                     @stuff;

@@ -1,3 +1,4 @@
+#!perl -w
 use Test::More no_plan;
 
 # This time, with folding!
