@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.7';
+$VERSION = '1.8';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
                                             # But then, so is a six dollar whore.
@@ -219,15 +219,23 @@ sub _header_as_string {
     # Ignore "empty" headers
     return '' unless @stuff = grep { defined $_ } @stuff;
     return join "", map { $_ = "$field: $_$self->{mycrlf}";
-                          length > 78 ? _fold($_) : $_ }
+                          length > 78 ? $self->_fold($_) : $_ }
                     @stuff;
 }
 
 sub _fold {
-    require Text::Wrap; # Even though it's core I don't like using it
-    local $Text::Wrap::columns = 78; # In case others are using it.
-    return Text::Wrap::wrap('', ' ', shift);
-    # I don't like it, I don't like it, I don't like it.
+    my $self = shift;
+    my $line = shift;
+    # We know it will not contain any new lines at present
+    my $folded = "";
+    while ($line) {
+        $line =~ s/^\s+//;
+        if ($line =~ s/^(.{0,77})(\s|\z)//) {
+            $folded .= $1.$self->{mycrlf};
+            $folded .= " " if $line;
+        }
+    }
+    return $folded;
 }
 
 1;
