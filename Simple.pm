@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.8';
+$VERSION = '1.9';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
                                             # But then, so is a six dollar whore.
@@ -233,6 +233,10 @@ sub _fold {
         if ($line =~ s/^(.{0,77})(\s|\z)//) {
             $folded .= $1.$self->{mycrlf};
             $folded .= " " if $line;
+        } else {
+            # Basically nothing we can do. :(
+            $folded .= $line;
+            last;
         }
     }
     return $folded;

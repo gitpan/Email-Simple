@@ -1,5 +1,7 @@
 Revision history for Perl extension Email::Simple.
 
+1.9   Fix our own damned line-wrapping.
+
 1.8   Do our own damned line-wrapping
 
 1.7   Sample, don't assume, what CRLF we're using.
