@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.4';
+$VERSION = '1.5';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
                                             # But then, so is a six dollar whore.
@@ -51,7 +51,8 @@ have feature Y? Because it's meant to be simple.
 
 =head2 new
 
-Parse an email from a scalar, and return an object.
+Parse an email from a scalar containing an RFC2822 formatted message,
+and return an object.
 
 =cut
 
@@ -85,11 +86,11 @@ sub _split_head_from_body {
 # name MUST be composed of printable US-ASCII characters (i.e.,
 # characters that have values between 33 and 126, inclusive), except
 # colon.  A field body may be composed of any US-ASCII characters,
-# except for CR and LF. 
+# except for CR and LF.
 
 # However, a field body may contain CRLF when
 # used in header "folding" and  "unfolding" as described in section
-# 2.2.3.  
+# 2.2.3.
 
 sub _read_headers {
     my $head = shift;
@@ -113,7 +114,7 @@ sub _read_headers {
 
 =head1 header
 
-Returns a list of the contents of the given header. 
+Returns a list of the contents of the given header.
 
 If called in scalar context, will return the B<first> header so named.
 I'm not sure I like that. Maybe it should always return a list. But it
@@ -124,7 +125,7 @@ doesn't.
 sub header {
     my ($self, $field) = @_;
     $field = $self->{header_names}->{lc $field} || return "";
-    return wantarray ? @{$self->{head}->{$field}} 
+    return wantarray ? @{$self->{head}->{$field}}
                      :   $self->{head}->{$field}->[0];
 }
 
@@ -140,7 +141,7 @@ in, you get multiple headers, and order is retained.
 sub header_set {
     my ($self, $field, @data) = @_;
     if ($GROUCHY) {
-        croak "I am not going to break RFC2822 and neither are you" 
+        croak "I am not going to break RFC2822 and neither are you"
             unless $field =~ /^[\x21-\x39\x3b-\x7e]+$/;
         carp "You're a miserable bastard but I'll let you off this time"
             unless $field =~ /^[\w-]+$/;
@@ -172,7 +173,7 @@ Sets the body text of the mail.
 
 =cut
 
-sub body_set { $_[0]->{body} = $_[1] } 
+sub body_set { $_[0]->{body} = $_[1] }
 
 =head2 as_string
 
@@ -214,13 +215,13 @@ sub _headers_as_string {
 sub _header_as_string {
     my ($field, $data) = @_;
     my @stuff = @$data;
-    return '' unless "@stuff" =~ /./; # Ignore "empty" headers
+    # Ignore "empty" headers
+    return '' unless @stuff = grep { defined $_ } @stuff;
     return join "", map { $_ = "$field: $_\n";
-                          length > 78 ? _fold($_) : $_ } 
+                          length > 78 ? _fold($_) : $_ }
                     @stuff;
 }
 
-my $wrapper;
 sub _fold {
     require Text::Wrap; # Even though it's core I don't like using it
     local $Text::Wrap::columns = 78; # In case others are using it.
@@ -230,12 +231,22 @@ sub _fold {
 
 1;
 
+__END__
+
+=head1 CAVEATS
+
+Email::Simple handles only RFC2822 formatted messages.  This means you
+cannot expect it to cope well as the only parser between you and the
+outside world, say for example when writing a mail filter for
+invocation from a .forward file (for this we recommend you use
+L<Email::Filter> anyway).  For more information on this issue please
+consult L<rt issue 2478|http://rt.cpan.org/NoAuth/Bug.html?id=2478>
 
 =head1 COPYRIGHT AND LICENSE
 
 Copyright 2003 by Simon Cozens
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
+it under the same terms as Perl itself.
 
 =cut
