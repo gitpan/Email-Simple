@@ -5,10 +5,10 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.2';
+$VERSION = '1.3';
 
-my $crlf = qr/\xa\xd|\xd\xa|\xa|\xd/; # We are liberal in what we accept.
-                                      # But then, so is a six dollar whore.
+my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
+                                            # But then, so is a six dollar whore.
 
 $GROUCHY = 0;
 
@@ -73,8 +73,8 @@ sub _split_head_from_body {
     # follows the header and is separated from the header by an empty
     # line (i.e., a line with nothing preceding the CRLF).
     #  - RFC 2822, section 2.1
-    if ($text =~ /(.*?)^$crlf(.*)/sm) {
-        return ($1, $2);
+    if ($text =~ /(.*?($crlf))\2(.*)/sm) {
+        return ($1, $3);
     } else { # The body is, of course, optional.
         return ($text, "");
     }
@@ -146,7 +146,7 @@ sub header_set {
             unless $field =~ /^[\w-]+$/;
     }
 
-    if (!exists $self->{header_names}->{$field}) {
+    if (!exists $self->{header_names}->{lc $field}) {
         $self->{header_names}->{lc $field} = $field;
         # New fields are added to the end.
         push @{$self->{order}}, $field;
@@ -213,9 +213,11 @@ sub _headers_as_string {
 
 sub _header_as_string {
     my ($field, $data) = @_;
+    my @stuff = @$data;
+    return unless "@stuff" =~ /./; # Ignore "empty" headers
     return join "", map { $_ = "$field: $_\n";
                           length > 78 ? _fold($_) : $_ } 
-                    @$data;
+                    @stuff;
 }
 
 my $wrapper;

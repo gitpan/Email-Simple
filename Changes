@@ -1,5 +1,6 @@
 Revision history for Perl extension Email::Simple.
 
+1.3 - Many fixes from Richard Clamp <richardc@unixbeard.net>
 1.2 - Text::Wrapper->Text::Wrap
 
 0.01  Thu Feb 13 15:07:01 2003

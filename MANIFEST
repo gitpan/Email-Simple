@@ -5,6 +5,7 @@ README
 Simple.pm
 t/1.t
 t/2.t
+t/3.t
 t/test-mails/josey-fold
 t/test-mails/josey-nofold
 t/unit.t
