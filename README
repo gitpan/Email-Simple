@@ -1,5 +1,5 @@
 NAME
-    Email::Simple - Email handling. Simply.
+    Email::Simple - Simple parsing of RFC2822 message format and headers
 
 SYNOPSIS
         my $mail = Email::Simple->new($text);
@@ -32,7 +32,8 @@ METHODS
     have feature Y? Because it's meant to be simple.
 
   new
-    Parse an email from a scalar, and return an object.
+    Parse an email from a scalar containing an RFC2822 formatted message,
+    and return an object.
 
 header
     Returns a list of the contents of the given header.
@@ -62,9 +63,22 @@ header
     Also, if you've added new headers with "header_set" that weren't in the
     original mail, they'll be added to the end.
 
+CAVEATS
+    Email::Simple handles only RFC2822 formatted messages. This means you
+    cannot expect it to cope well as the only parser between you and the
+    outside world, say for example when writing a mail filter for invocation
+    from a .forward file (for this we recommend you use Email::Filter
+    anyway). For more information on this issue please consult RT issue
+    2478, http://rt.cpan.org/NoAuth/Bug.html?id=2478 .
+
 COPYRIGHT AND LICENSE
+    Copyright 2004 by Casey West
+
     Copyright 2003 by Simon Cozens
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
+
+SEE ALSO
+    Perl Email Project, http://pep.kwiki.org .
 

@@ -1,5 +1,11 @@
 Revision history for Perl extension Email::Simple.
 
+1.91    2004-10-27
+
+  - Tests use alarm(), skip those tests on MSWin32.
+  - body() is initialized to '' if it isn't defined.
+  - Author changes.
+
 1.9   Fix our own damned line-wrapping.
 
 1.8   Do our own damned line-wrapping

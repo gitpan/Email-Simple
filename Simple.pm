@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.9';
+$VERSION = '1.91';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
                                             # But then, so is a six dollar whore.
@@ -76,7 +76,7 @@ sub _split_head_from_body {
     # line (i.e., a line with nothing preceding the CRLF).
     #  - RFC 2822, section 2.1
     if ($text =~ /(.*?($crlf))\2(.*)/sm) {
-        return ($1, $3, $2);
+        return ($1, ($3 || ''), $2);
     } else { # The body is, of course, optional.
         return ($text, "", "\n");
     }
@@ -174,7 +174,7 @@ Sets the body text of the mail.
 
 =cut
 
-sub body_set { $_[0]->{body} = $_[1] }
+sub body_set { $_[0]->{body} = $_[1] || '' }
 
 =head2 as_string
 
@@ -253,13 +253,19 @@ cannot expect it to cope well as the only parser between you and the
 outside world, say for example when writing a mail filter for
 invocation from a .forward file (for this we recommend you use
 L<Email::Filter> anyway).  For more information on this issue please
-consult L<rt issue 2478|http://rt.cpan.org/NoAuth/Bug.html?id=2478>
+consult RT issue 2478, http://rt.cpan.org/NoAuth/Bug.html?id=2478 .
 
 =head1 COPYRIGHT AND LICENSE
+
+Copyright 2004 by Casey West
 
 Copyright 2003 by Simon Cozens
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+Perl Email Project, http://pep.kwiki.org .
 
 =cut
