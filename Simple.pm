@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.91';
+$VERSION = '1.92';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
                                             # But then, so is a six dollar whore.
@@ -113,7 +113,7 @@ sub _read_headers {
     return ($head_hash, \@head_order);
 }
 
-=head1 header
+=head2 header
 
 Returns a list of the contents of the given header.
 

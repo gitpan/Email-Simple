@@ -1,4 +1,4 @@
-use Test::More no_plan;
+use Test::More tests => 1;
 use Email::Simple;
 
 my $m = Email::Simple->new("Foo-Bar: Baz\n\ntest\n");                           
