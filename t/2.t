@@ -20,4 +20,3 @@ is_deeply([$mail->header("Received")],
 'from mailman.opengroup.org ([192.153.166.9]) by deep-dark-truthful-mirror.pad with smtp (Exim 3.36 #1 (Debian)) id 18Buh5-0006Zr-00 for <posix@simon-cozens.org>; Wed, 13 Nov 2002 10:24:23 +0000',
 '(qmail 1679 invoked by uid 503); 13 Nov 2002 10:10:49 -0000'],
 "And the received headers are folded gracefully, and multiple headers work");
-

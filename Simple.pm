@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.1';
+$VERSION = '1.2';
 
 my $crlf = qr/\xa\xd|\xd\xa|\xa|\xd/; # We are liberal in what we accept.
                                       # But then, so is a six dollar whore.
@@ -220,9 +220,9 @@ sub _header_as_string {
 
 my $wrapper;
 sub _fold {
-    require Text::Wrapper; # Even though it's core I don't like using it
-    $wrapper ||= Text::Wrapper->new(columns => 78, body_start => ' ');
-    return $wrapper->wrap(shift); 
+    require Text::Wrap; # Even though it's core I don't like using it
+    local $Text::Wrap::columns = 78; # In case others are using it.
+    return Text::Wrap::wrap('', ' ', shift);
     # I don't like it, I don't like it, I don't like it.
 }
 
