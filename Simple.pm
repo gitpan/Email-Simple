@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.61';
+$VERSION = '1.7';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
                                             # But then, so is a six dollar whore.
@@ -14,7 +14,7 @@ $GROUCHY = 0;
 
 =head1 NAME
 
-Email::Simple - Email handling. Simply.
+Email::Simple - Simple parsing of RFC2822 message format and headers
 
 =head1 SYNOPSIS
 
@@ -58,12 +58,13 @@ and return an object.
 
 sub new {
     my ($class, $text) = @_;
-    my ($head, $body) = _split_head_from_body($text);
+    my ($head, $body, $mycrlf) = _split_head_from_body($text);
     my ($head_hash, $order) = _read_headers($head);
     bless {
         head => $head_hash,
         body => $body,
         order => $order,
+        mycrlf => $mycrlf,
         header_names => { map { lc $_ => $_ } keys %$head_hash }
     }, $class;
 }
@@ -75,9 +76,9 @@ sub _split_head_from_body {
     # line (i.e., a line with nothing preceding the CRLF).
     #  - RFC 2822, section 2.1
     if ($text =~ /(.*?($crlf))\2(.*)/sm) {
-        return ($1, $3);
+        return ($1, $3, $2);
     } else { # The body is, of course, optional.
-        return ($text, "");
+        return ($text, "", "\n");
     }
 }
 
@@ -195,29 +196,29 @@ original mail, they'll be added to the end.
 
 sub as_string {
     my $self = shift;
-    return _headers_as_string($self)."\n".$self->body;
+    return _headers_as_string($self).$self->{mycrlf}.$self->body;
 }
 
 sub _headers_as_string {
     my $self = shift;
     my @order = @{$self->{order}};
     my %head = %{$self->{head}};
-    my $stuff;
+    my $stuff = "";
     while (keys %head) {
         my $thing = shift @order;
         next unless exists $head{$thing}; # We have already dealt with it
-        $stuff .= _header_as_string($thing, $head{$thing});
+        $stuff .= $self->_header_as_string($thing, $head{$thing});
         delete $head{$thing};
     }
     return $stuff;
 }
 
 sub _header_as_string {
-    my ($field, $data) = @_;
+    my ($self, $field, $data) = @_;
     my @stuff = @$data;
     # Ignore "empty" headers
     return '' unless @stuff = grep { defined $_ } @stuff;
-    return join "", map { $_ = "$field: $_\n";
+    return join "", map { $_ = "$field: $_$self->{mycrlf}";
                           length > 78 ? _fold($_) : $_ }
                     @stuff;
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 use strict;
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 sub read_file { local $/; local *FH; open FH, shift or die $!; return <FH> }
 use_ok("Email::Simple");
@@ -32,7 +32,7 @@ is($mail->body, $hi, "Body can be set properly");
 
 $mail->body_set($body);
 is($mail->as_string, $mail_text, "Good grief, it's round-trippable");
-is($mail->as_string, $mail_text, "Good grief, it's still round-trippable");
+is(Email::Simple->new($mail->as_string)->as_string, $mail_text, "Good grief, it's still round-trippable");
 
 # With nasty newlines
 my $nasty = "Subject: test\n\rTo: foo\n\r\n\rfoo\n\r";
@@ -40,6 +40,5 @@ $mail = Email::Simple->new($nasty);
 my ($x,$y) = Email::Simple::_split_head_from_body($nasty);
 is ($x, "Subject: test\n\rTo: foo\n\r", "Can split head OK");
 my $test = $mail->as_string;
-$nasty =~ s/\r//g;
-$test  =~ s/\r//g;
 is($test, $nasty, "Round trip that too");
+is(Email::Simple->new($mail->as_string)->as_string, $nasty, "... twice");
