@@ -4,13 +4,13 @@ use 5.00503;
 use strict;
 use Carp;
 
-use vars '$VERSION';
-$VERSION = '1.0';
+use vars qw($VERSION $GROUCHY);
+$VERSION = '1.1';
 
 my $crlf = qr/\xa\xd|\xd\xa|\xa|\xd/; # We are liberal in what we accept.
                                       # But then, so is a six dollar whore.
 
-our $GROUCHY = 0;
+$GROUCHY = 0;
 
 =head1 NAME
 
@@ -221,7 +221,7 @@ sub _header_as_string {
 my $wrapper;
 sub _fold {
     require Text::Wrapper; # Even though it's core I don't like using it
-    $wrapper ||= new Text::Wrapper->new(columns => 78, body_start => ' ');
+    $wrapper ||= Text::Wrapper->new(columns => 78, body_start => ' ');
     return $wrapper->wrap(shift); 
     # I don't like it, I don't like it, I don't like it.
 }
