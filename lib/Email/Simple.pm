@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.95';
+$VERSION = '1.96';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
                                             # But then, so is a six dollar whore.
@@ -61,9 +61,9 @@ sub new {
     my ($head, $body, $mycrlf) = _split_head_from_body($text);
     my ($head_hash, $order) = _read_headers($head);
     bless {
-        head => $head_hash,
-        body => $body,
-        order => $order,
+        head   => $head_hash,
+        body   => $body,
+        order  => $order,
         mycrlf => $mycrlf,
         header_names => { map { lc $_ => $_ } keys %$head_hash }
     }, $class;
@@ -125,7 +125,7 @@ doesn't.
 
 sub header {
     my ($self, $field) = @_;
-    $field = $self->{header_names}->{lc $field} || return "";
+    return '' unless $field = $self->{header_names}->{lc $field};
     return wantarray ? @{$self->{head}->{$field}}
                      :   $self->{head}->{$field}->[0];
 }
@@ -142,9 +142,9 @@ in, you get multiple headers, and order is retained.
 sub header_set {
     my ($self, $field, @data) = @_;
     if ($GROUCHY) {
-        croak "I am not going to break RFC2822 and neither are you"
+        croak "field name contains illegal characters"
             unless $field =~ /^[\x21-\x39\x3b-\x7e]+$/;
-        carp "You're a miserable bastard but I'll let you off this time"
+        carp "field name is not limited to hyphens and alphanumerics"
             unless $field =~ /^[\w-]+$/;
     }
 
@@ -166,7 +166,10 @@ Returns the body text of the mail.
 
 =cut
 
-sub body { return $_[0]->{body}      } # We like this. This is simple.
+sub body {
+  my ($self) = @_;
+  return defined($self->{body}) ? $self->{body} : '';
+}
 
 =head2 body_set
 
@@ -174,25 +177,22 @@ Sets the body text of the mail.
 
 =cut
 
-sub body_set { $_[0]->{body} = $_[1] || '' }
+sub body_set { $_[0]->{body} = $_[1]; $_[0]->body }
 
 =head2 as_string
 
-Returns the mail as a string, reconstructing the headers. Please note
-that header fields are kept in order if they are unique, but, for,
-instance, multiple "Received" headers will be grouped together. (This is
-in accordance with RFC2822, honest.)
+Returns the mail as a string, reconstructing the headers.
 
-Also, if you've added new headers with C<header_set> that weren't in the
-original mail, they'll be added to the end.
+If you've added new headers with C<header_set> that weren't in the original
+mail, they'll be added to the end.
 
 =cut
 
-# However, for the purposes of this standard, header
-# fields SHOULD NOT be reordered when a message is transported or
-# transformed.  More importantly, the trace header fields and resent
-# header fields MUST NOT be reordered, and SHOULD be kept in blocks
-# prepended to the message.
+# RFC 2822, 3.6:
+# ...for the purposes of this standard, header fields SHOULD NOT be reordered
+# when a message is transported or transformed.  More importantly, the trace
+# header fields and resent header fields MUST NOT be reordered, and SHOULD be
+# kept in blocks prepended to the message.
 
 sub as_string {
     my $self = shift;
@@ -202,25 +202,30 @@ sub as_string {
 sub _headers_as_string {
     my $self = shift;
     my @order = @{$self->{order}};
-    my %head = %{$self->{head}};
-    my $stuff = "";
-    while (keys %head) {
-        my $thing = shift @order;
-        next unless exists $head{$thing}; # We have already dealt with it
-        $stuff .= $self->_header_as_string($thing, $head{$thing});
-        delete $head{$thing};
+
+    my $header_str = "";
+    my %seen;
+
+    for my $header (@{$self->{order}}) {
+        $header_str .= $self->_header_as_string(
+          $header,
+          $self->{head}{$header}[ $seen{$header}++ ]
+        );
     }
-    return $stuff;
+
+    return $header_str;
 }
 
 sub _header_as_string {
     my ($self, $field, $data) = @_;
-    my @stuff = @$data;
+
     # Ignore "empty" headers
-    return '' unless @stuff = grep { defined $_ } @stuff;
-    return join "", map { length > 78 ? $self->_fold($_) : "$_$self->{mycrlf}" }
-                    map { "$field: $_" } 
-                    @stuff;
+    return '' unless defined $data;
+
+    my $string = "$field: $data";
+
+    return (length $string > 78) ? $self->_fold($string)
+                                 : "$string$self->{mycrlf}";
 }
 
 sub _fold {
