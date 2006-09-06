@@ -1,5 +1,10 @@
 Revision history for Perl extension Email::Simple.
 
+1.990    2006-09-05
+
+  - ->header('foo') returns false if there is no foo header (formerly '')
+  - croak if an undef value is passed to new()
+
 1.980    2006-08-17
 
   - fix _fold() to add a missing line ending [RT #20764] (Brian Cassidy)

@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.980';
+$VERSION = '1.990';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
 
@@ -52,6 +52,9 @@ and return an object.
 
 sub new {
     my ($class, $text) = @_;
+
+    croak 'Unable to parse undefined message' if !defined $text;
+
     my ($head, $body, $mycrlf) = _split_head_from_body($text);
     my ($head_hash, $order) = _read_headers($head);
     bless {
@@ -121,7 +124,10 @@ context, it returns the I<first> value for the named header.
 
 sub header {
     my ($self, $field) = @_;
-    return '' unless $field = $self->{header_names}->{lc $field};
+    return unless
+      (exists $self->{header_names}->{lc $field})
+      and $field = $self->{header_names}->{lc $field};
+
     return wantarray ? @{$self->{head}->{$field}}
                      :   $self->{head}->{$field}->[0];
 }

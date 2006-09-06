@@ -26,5 +26,6 @@ t/test-mails/josey-nofold
 t/test-mails/junk-in-header
 t/test-mails/long-msgid
 t/test-mails/many-repeats
+t/undef-message.t
 t/unit.t
 META.yml                                 Module meta-data (added by MakeMaker)
