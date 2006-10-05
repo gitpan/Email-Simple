@@ -5,7 +5,7 @@ use strict;
 use Carp;
 
 use vars qw($VERSION $GROUCHY);
-$VERSION = '1.990';
+$VERSION = '1.992';
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/; # We are liberal in what we accept.
 
@@ -158,6 +158,16 @@ sub header_set {
         $field = $self->{header_names}->{lc $field};
     }
 
+    my @loci = grep { lc $self->{order}[$_] eq lc $field }
+               0 ..  $#{$self->{order}};
+
+    if (@loci > @data) {
+      my $overage = @loci - @data;
+      splice @{$self->{order}}, $_, 1 for reverse @loci[ -$overage, $#loci ];
+    } elsif (@data > @loci) {
+      push @{$self->{order}}, ($field) x (@data - @loci);
+    }
+
     $self->{head}->{$field} = [ @data ];
     return wantarray ? @data : $data[0];
 }
@@ -301,7 +311,7 @@ consult RT issue 2478, http://rt.cpan.org/NoAuth/Bug.html?id=2478 .
 
 This module is maintained by the Perl Email Project
 
-  L<http://emailproject.perl.org/wiki/Email::Simple>
+L<http://emailproject.perl.org/wiki/Email::Simple>
 
 =head1 COPYRIGHT AND LICENSE
 
