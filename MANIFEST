@@ -6,6 +6,7 @@ MANIFEST
 README
 t/badly-folded.t
 t/basic.t
+t/ct-header.t
 t/folding.t
 t/header-case.t
 t/header-junk.t
@@ -30,4 +31,5 @@ t/test-mails/long-msgid
 t/test-mails/many-repeats
 t/undef-message.t
 t/unit.t
+LICENSE
 META.yml                                 Module meta-data (added by MakeMaker)
