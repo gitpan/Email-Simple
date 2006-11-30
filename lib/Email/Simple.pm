@@ -6,7 +6,7 @@ use Carp ();
 
 use Email::Simple::Header;
 
-$Email::Simple::VERSION = '1.997_01';
+$Email::Simple::VERSION = '1.997_02';
 $Email::Simple::GROUCHY = 0;
 
 my $crlf = qr/\x0a\x0d|\x0d\x0a|\x0a|\x0d/;  # We are liberal in what we accept.
@@ -17,17 +17,17 @@ Email::Simple - Simple parsing of RFC2822 message format and headers
 
 =head1 SYNOPSIS
 
-    my $email = Email::Simple->new($text);
+  my $email = Email::Simple->new($text);
 
-    my $from_header = $email->header("From");
-    my @received = $email->header("Received");
+  my $from_header = $email->header("From");
+  my @received = $email->header("Received");
 
-    $email->header_set("From", 'Simon Cozens <simon@cpan.org>');
+  $email->header_set("From", 'Simon Cozens <simon@cpan.org>');
 
-    my $old_body = $email->body;
-    $email->body_set("Hello world\nSimon");
+  my $old_body = $email->body;
+  $email->body_set("Hello world\nSimon");
 
-    print $email->as_string;
+  print $email->as_string;
 
 =head1 DESCRIPTION
 
@@ -61,15 +61,14 @@ sub new {
   if (defined $pos) {
     $head = substr $$text_ref, 0, $pos, '';
   } else {
-    $head = $$text_ref;
+    $head     = $$text_ref;
     $text_ref = \'';
   }
 
   $self->{body} = $text_ref;
 
   $self->header_obj_set(
-    Email::Simple::Header->new($head, { crlf => $self->crlf })
-  );
+    Email::Simple::Header->new($head, { crlf => $self->crlf }));
 
   return $self;
 }
@@ -82,10 +81,11 @@ sub _split_head_from_body {
 
   # For body/header division, see RFC 2822, section 2.1
   if ($$text_ref =~ /(.*?($crlf))\2/gsm) {
-    return(pos($$text_ref), $2);
+    return (pos($$text_ref), $2);
   } else {
+
     # The body is, of course, optional.
-    return(undef, "\n");
+    return (undef, "\n");
   }
 }
 
@@ -109,36 +109,13 @@ exists primarily for internal consumption.
 
 sub header_obj {
   my ($self) = @_;
-  return $self->{_head} if $self->{_head};
-
-  if ($self->{head} and $self->{order} and $self->{header_names}) {
-    Carp::carp "Email::Simple subclass appears to have broken header behavior";
-    my $head = bless {} => 'Email::Simple::Header';
-    $head->{$_} = $self->{$_} for qw(head order header_names mycrlf);
-    return $self->{_head} = $head;
-  }
+  return $self->{header};
 }
 
 # Probably needs to exist in perpetuity for modules released during the "__head
 # is tentative" phase, until we have a way to force modules below us on the
 # dependency tree to upgrade.  i.e., never and/or in Perl 6 -- rjbs, 2006-11-28
-BEGIN { *__head = \&header_obj };
-
-sub _read_headers {
-  Carp::carp "Email::Simple::_read_headers is private and depricated";
-  my ($head) = @_;  # ARG!  Why is this a function? -- rjbs
-  my $header_obj = Email::Simple::Header->new(\$head);
-  my $h = $header_obj->{head};
-  my $o = $header_obj->{order};
-  return ($h, $o);
-}
-
-sub __read_header {
-  my ($self, $head_str) = @_;
-
-  my $head = ref $head_str ? $head_str : \$head_str;
-
-}
+BEGIN { *__head = \&header_obj }
 
 =head2 header_obj_set
 
@@ -151,7 +128,7 @@ header object.
 
 sub header_obj_set {
   my ($self, $obj) = @_;
-  $self->{_head} = $obj;
+  $self->{header} = $obj;
 }
 
 =head2 header
