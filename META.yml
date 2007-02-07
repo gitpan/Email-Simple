@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Email-Simple
-version:             1.997_02
+version:             1.998
 abstract:            ~
 license:             perl
 generated_by:        ExtUtils::MakeMaker version 6.31
