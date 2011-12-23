@@ -8,7 +8,7 @@ use Carp ();
 use Email::Simple::Creator;
 use Email::Simple::Header;
 
-our $VERSION = '2.100';
+our $VERSION = '2.101';
 our $GROUCHY = 0;
 
 # We are liberal in what we accept.
@@ -20,6 +20,7 @@ Email::Simple - simple parsing of RFC2822 message format and headers
 
 =head1 SYNOPSIS
 
+  use Email::Simple;
   my $email = Email::Simple->new($text);
 
   my $from_header = $email->header("From");
@@ -33,7 +34,7 @@ Email::Simple - simple parsing of RFC2822 message format and headers
   print $email->as_string;
 
 ...or, to create a message from scratch...
-  
+
   my $email = Email::Simple->create(
       header => [
         From    => 'casey@geeknest.com',
@@ -62,12 +63,12 @@ external dependencies, and correct.
   my $email = Email::Simple->new($message, \%arg);
 
 This method parses an email from a scalar containing an RFC2822 formatted
-message, and return an object.  C<$message> may be a reference to a message
+message and returns an object.  C<$message> may be a reference to a message
 string, in which case the string will be altered in place.  This can result in
 significant memory savings.
 
-If you want to create a message from scratch, you should use the plugin
-L<Email::Simple::Creator>.
+If you want to create a message from scratch, you should use the C<L</create>>
+method.
 
 Valid arguments are:
 
@@ -326,7 +327,7 @@ L<http://rt.cpan.org/NoAuth/Bug.html?id=2478>.
 
 This module is maintained by the Perl Email Project
 
-L<http://emailproject.perl.org/wiki/Email::Simple>
+L<http://emailproject.perl.org/>
 
 =head1 AUTHORS
 

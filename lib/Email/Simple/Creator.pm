@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Email::Simple::Creator;
 
-our $VERSION = '2.100';
+our $VERSION = '2.101';
 
 sub _crlf {
   "\x0d\x0a";
@@ -36,7 +36,7 @@ Email::Simple::Creator - private helper for building Email::Simple objects
 
 This module is maintained by the Perl Email Project
 
-L<http://emailproject.perl.org/wiki/Email::Simple::Creator>
+L<http://emailproject.perl.org/>
 
 =head1 AUTHORS
 
