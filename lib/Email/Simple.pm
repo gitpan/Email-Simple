@@ -8,7 +8,7 @@ use Carp ();
 use Email::Simple::Creator;
 use Email::Simple::Header;
 
-our $VERSION = '2.101';
+our $VERSION = '2.102';
 our $GROUCHY = 0;
 
 # We are liberal in what we accept.
@@ -123,7 +123,8 @@ sub _split_head_from_body {
   } else {
 
     # The body is, of course, optional.
-    return (undef, "\n");
+    $$text_ref =~ /($crlf)/gsm;
+    return (undef, ($1 || "\n"));
   }
 }
 
