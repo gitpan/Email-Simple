@@ -4,7 +4,7 @@
       "unknown"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "ExtUtils::MakeMaker version 6.6501, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -41,5 +41,5 @@
    "resources" : {
       "x_Repository" : "http://github.com/rjbs/email-simple"
    },
-   "version" : "2.102"
+   "version" : "2.103"
 }

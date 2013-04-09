@@ -5,7 +5,7 @@ use Carp ();
 
 require Email::Simple;
 
-$Email::Simple::Header::VERSION = '2.102';
+$Email::Simple::Header::VERSION = '2.103';
 
 =head1 NAME
 
@@ -76,7 +76,7 @@ sub _header_to_list {
       # the previous header.
       next if !@headers;  # Well, that sucks.  We're continuing nothing?
 
-      $headers[-1] .= $headers[-1] ? " $_" : $_;
+      $headers[-1] .= $headers[-1] =~ /\S/ ? " $_" : $_;
     } else {
       push @headers, $1, $2;
     }
