@@ -37,9 +37,9 @@
          }
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "x_Repository" : "http://github.com/rjbs/email-simple"
    },
-   "version" : "2.200_02"
+   "version" : "2.201"
 }
