@@ -56,7 +56,7 @@
          "web" : "https://github.com/rjbs/Email-Simple"
       }
    },
-   "version" : "2.104",
+   "version" : "2.202",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.019003"

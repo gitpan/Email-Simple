@@ -3,7 +3,7 @@ use strict;
 use warnings;
 package Email::Simple;
 {
-  $Email::Simple::VERSION = '2.104';
+  $Email::Simple::VERSION = '2.202';
 }
 # ABSTRACT: simple parsing of RFC2822 message format and headers
 
@@ -169,7 +169,7 @@ Email::Simple - simple parsing of RFC2822 message format and headers
 
 =head1 VERSION
 
-version 2.104
+version 2.202
 
 =head1 SYNOPSIS
 

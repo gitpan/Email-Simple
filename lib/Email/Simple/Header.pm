@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Email::Simple::Header;
 {
-  $Email::Simple::Header::VERSION = '2.104';
+  $Email::Simple::Header::VERSION = '2.202';
 }
 # ABSTRACT: the header of an Email::Simple message
 use Carp ();
@@ -259,7 +259,7 @@ Email::Simple::Header - the header of an Email::Simple message
 
 =head1 VERSION
 
-version 2.104
+version 2.202
 
 =head1 SYNOPSIS
 
