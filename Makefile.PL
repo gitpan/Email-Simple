@@ -1,38 +1,72 @@
+
 use strict;
-use ExtUtils::MakeMaker;
+use warnings;
 
-use 5.00503;
+use 5.006;
 
-# This is so stupid!  We need to make sure that Email::MIME, a downstream
-# module, is running a version that doesn't screw around with the guts of
-# Email::Simple.
-if (eval { require Email::MIME }) {
-  unless (eval { Email::MIME->VERSION(1.857) }) {
-    warn <<END_ACHTUNG;
-### ACHTUNG!  You need to update Email::MIME to a later version, as versions
-### before 1.857 meddled in the guts of Email::Simple, which have been changed.
-### If you are using an automated installer, this should happen automatically.
-###
-### This installation will proceed in five seconds.
-END_ACHTUNG
-    sleep 5;
+use ExtUtils::MakeMaker 6.30;
+
+
+
+my %WriteMakefileArgs = (
+  "ABSTRACT" => "simple parsing of RFC2822 message format and headers",
+  "AUTHOR" => "Simon Cozens, Casey West, Ricardo SIGNES",
+  "BUILD_REQUIRES" => {},
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
+  },
+  "DISTNAME" => "Email-Simple",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "Email::Simple",
+  "PREREQ_PM" => {
+    "Carp" => 0,
+    "Email::Date::Format" => 0,
+    "strict" => 0,
+    "warnings" => 0
+  },
+  "TEST_REQUIRES" => {
+    "Capture::Tiny" => 0,
+    "Test::More" => "0.96",
+    "blib" => 0
+  },
+  "VERSION" => "2.104",
+  "test" => {
+    "TESTS" => "t/*.t"
+  }
+);
+
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
+  my $tr = delete $WriteMakefileArgs{TEST_REQUIRES};
+  my $br = $WriteMakefileArgs{BUILD_REQUIRES};
+  for my $mod ( keys %$tr ) {
+    if ( exists $br->{$mod} ) {
+      $br->{$mod} = $tr->{$mod} if $tr->{$mod} > $br->{$mod};
+    }
+    else {
+      $br->{$mod} = $tr->{$mod};
+    }
   }
 }
 
-WriteMakefile(
-  NAME          => 'Email::Simple',
-  VERSION_FROM  => 'lib/Email/Simple.pm',
-  (eval { ExtUtils::MakeMaker->VERSION(6.21) } ? (LICENSE => 'perl') : ()),
-  PREREQ_PM     => {
-    'Test::More' => '0.47',
-    'Email::Date::Format' => 0,
-  },
-  (eval { ExtUtils::MakeMaker->VERSION(6.46) }
-    ? (META_MERGE => {
-        resources => {
-          Repository => 'http://github.com/rjbs/email-simple'
-        }
-      })
-    : ()
-  ),
-);
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
+}
+
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
+
+WriteMakefile(%WriteMakefileArgs);
+
+
+

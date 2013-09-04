@@ -1,11 +1,16 @@
 Changes
+LICENSE
+MANIFEST
+META.json
+META.yml
+Makefile.PL
+README
+dist.ini
 lib/Email/Simple.pm
 lib/Email/Simple/Creator.pm
 lib/Email/Simple/Header.pm
-LICENSE
-Makefile.PL
-MANIFEST
-README
+t/00-compile.t
+t/000-report-versions-tiny.t
 t/badly-folded.t
 t/basic.t
 t/create.t
@@ -22,9 +27,6 @@ t/header-space.t
 t/long-msgid.t
 t/many-repeats.t
 t/no-body.t
-t/perl-minver.t
-t/pod-coverage.t
-t/pod.t
 t/preserve-linefeed.t
 t/test-mails/badly-folded
 t/test-mails/badly-folded-noindent
@@ -37,5 +39,5 @@ t/test-mails/long-msgid
 t/test-mails/many-repeats
 t/undef-message.t
 t/unit.t
-META.yml                                 Module YAML meta-data (added by MakeMaker)
-META.json                                Module JSON meta-data (added by MakeMaker)
+xt/release/changes_has_content.t
+xt/release/pod-syntax.t

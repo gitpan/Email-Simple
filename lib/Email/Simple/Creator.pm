@@ -1,9 +1,10 @@
 use strict;
 use warnings;
 package Email::Simple::Creator;
-
-our $VERSION = '2.201';
-$VERSION = eval $VERSION;
+{
+  $Email::Simple::Creator::VERSION = '2.104';
+}
+# ABSTRACT: private helper for building Email::Simple objects
 
 sub _crlf {
   "\x0d\x0a";
@@ -29,26 +30,39 @@ sub _finalize_header {
 
 __END__
 
+=pod
+
 =head1 NAME
 
 Email::Simple::Creator - private helper for building Email::Simple objects
 
-=head1 PERL EMAIL PROJECT
+=head1 VERSION
 
-This module is maintained by the Perl Email Project
-
-L<http://emailproject.perl.org/>
+version 2.104
 
 =head1 AUTHORS
 
-Casey West originally wrote Email::Simple::Creator in 2004.  Ricardo SIGNES
-took over maintenance in 2006.
+=over 4
+
+=item *
+
+Simon Cozens
+
+=item *
+
+Casey West
+
+=item *
+
+Ricardo SIGNES
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2004 Casey West.
+This software is copyright (c) 2003 by Simon Cozens.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
