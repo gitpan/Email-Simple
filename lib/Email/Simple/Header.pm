@@ -1,14 +1,36 @@
 use strict;
 use warnings;
 package Email::Simple::Header;
-{
-  $Email::Simple::Header::VERSION = '2.202';
-}
 # ABSTRACT: the header of an Email::Simple message
+$Email::Simple::Header::VERSION = '2.203';
 use Carp ();
 
 require Email::Simple;
 
+# =head1 SYNOPSIS
+#
+#   my $email = Email::Simple->new($text);
+#
+#   my $header = $email->header_obj;
+#   print $header->as_string;
+#
+# =head1 DESCRIPTION
+#
+# This method implements the headers of an Email::Simple object.  It is a very
+# minimal interface, and is mostly for private consumption at the moment.
+#
+# =method new
+#
+#   my $header = Email::Simple::Header->new($head, \%arg);
+#
+# C<$head> is a string containing a valid email header, or a reference to such a
+# string.  If a reference is passed in, don't expect that it won't be altered.
+#
+# Valid arguments are:
+#
+#   crlf - the header's newline; defaults to CRLF
+#
+# =cut
 
 # We need to be able to:
 #   * get all values by lc name
@@ -60,6 +82,13 @@ sub _header_to_list {
   return \@headers;
 }
 
+# =method as_string
+#
+#   my $string = $header->as_string(\%arg);
+#
+# This returns a stringified version of the header.
+#
+# =cut
 
 # RFC 2822, 3.6:
 # ...for the purposes of this standard, header fields SHOULD NOT be reordered
@@ -95,6 +124,12 @@ sub as_string {
   return $header_str;
 }
 
+# =method header_names
+#
+# This method returns a list of the unique header names found in this header, in
+# no particular order.
+#
+# =cut
 
 sub header_names {
   my $headers = $_[0]->{headers};
@@ -104,6 +139,17 @@ sub header_names {
     map { $headers->[ $_ * 2 ] } 0 .. int($#$headers / 2);
 }
 
+# =method header_pairs
+#
+#   my @pairs = $header->header_pairs;
+#   my $first_name  = $pairs[0];
+#   my $first_value = $pairs[1];
+#
+# This method returns a list of all the field/value pairs in the header, in the
+# order that they appear in the header.  (Remember: don't try assigning that to a
+# hash.  Some fields may appear more than once!)
+#
+# =cut
 
 sub header_pairs {
   my ($self) = @_;
@@ -113,6 +159,15 @@ sub header_pairs {
   return @pairs;
 }
 
+# =method header
+#
+#   my $first_value = $header->header($field);
+#   my @all_values  = $header->header($field);
+#
+# This method returns the value or values of the given header field.  If the
+# named field does not appear in the header, this method returns false.
+#
+# =cut
 
 sub _str_value { return ref $_[0] ? $_[0][0] : $_[0] }
 
@@ -133,6 +188,15 @@ sub header {
   }
 }
 
+# =method header_set
+#
+#   $header->header_set($field => @values);
+#
+# This method updates the value of the given header.  Existing headers have their
+# values set in place.  Additional headers are added at the end.  If no values
+# are given to set, the header will be removed from to the message entirely.
+#
+# =cut
 
 # Header fields are lines composed of a field name, followed by a colon (":"),
 # followed by a field body, and terminated by CRLF.  A field name MUST be
@@ -179,6 +243,11 @@ sub header_set {
   return wantarray ? @data : $data[0];
 }
 
+# =method crlf
+#
+# This method returns the newline string used in the header.
+#
+# =cut
 
 sub crlf { $_[0]->{mycrlf} }
 
@@ -253,13 +322,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Email::Simple::Header - the header of an Email::Simple message
 
 =head1 VERSION
 
-version 2.202
+version 2.203
 
 =head1 SYNOPSIS
 
